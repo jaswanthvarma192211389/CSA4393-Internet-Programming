@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("image 5.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e9ecef;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 350px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .button {
+            display: flex;
+            justify-content: center;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .total-price {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .payment-details {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Payment Form</h2>
+        <form id="payment-form">
+            <div class="note">
+                <label for="tickets">Number of Tickets Booked:</label>
+                <input type="number" id="tickets" name="tickets" value="0" readonly>
+            </div>
+
+            <div class="total-price">
+                Total Price: <span id="total-price">0</span> Rupees
+            </div>
+
+            <label for="payment-method">Payment Method:</label>
+            <select id="payment-method" name="payment-method" required>
+                <option value="">Select Payment Method</option>
+                <option value="upi">UPI</option>
+                <option value="credit-card">Credit Card</option>
+            </select>
+
+            <div id="upi-details" class="payment-details">
+                <label for="upi-id">UPI ID:</label>
+                <input type="text" id="upi-id" name="upi-id" placeholder="example@upi">
+            </div>
+
+            <div id="credit-card-details" class="payment-details">
+                <label for="card-number">Card Number:</label>
+                <input type="text" id="card-number" name="card-number" pattern="\d{16}" placeholder="1234 5678 9012 3456">
+
+                <label for="expiry-date">Expiry Date:</label>
+                <input type="month" id="expiry-date" name="expiry-date">
+
+                <label for="cvv">CVV:</label>
+                <input type="text" id="cvv" name="cvv" pattern="\d{3}" placeholder="123">
+            </div>
+
+            <div class="button">
+                <button type="submit">Pay Now</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const classMultipliers = {
+            'sleeper': 0.50,
+            'ac': 2.00,
+            'first-class': 3.50
+        };
+
+        const distances = {
+            'Hyderabad-Vishakhapatnam': 512.87,
+            'Vijayawada-Warangal': 198.09,
+            'Guntur-Nellore': 213.92,
+            'Kukatpalli-Nizamabad': 135.34,
+            'Rajahmundry-Kakinada': 46.42,
+            'Tirupati-Anantapur': 227.06,
+            'Karimnagar-Machilipatnam': 328.39,
+            'Eluru-Vizianagaram': 291.93,
+            'Proddatur-Ongole': 182.19,
+            'Khammam-Nandyal': 264.95,
+            'Adoni-Bhimavaram': 464.94,
+            'Upal-Mahbubnagar': 97.05,
+            'Hindupur-Cuddapah': 159.33,
+            'Nalgonda-Guntakal': 290.38,
+            'Adilabad-Srikakulam': 584.33,
+            'Gudivada-Dharmavaram': 415.74,
+            'Suriapet-Madanapalle': 417.80,
+            'Tadepallegudem-Mirialguda': 204.00,
+            'Jagtial-Narasaraopet': 307.94,
+            'Chilakalurupet-Tadpatri': 264.37,
+            'Chirala-Anakapalle': 351.68,
+            'Kavali-Kadiri': 214.82,
+            'Rayachoti-Nirmal': 563.12,
+            'Emmiganuru-Kottagudem': 391.66,
+            'Mancheral-Paloncha': 193.03,
+            'Gudur-Bodhan': 545.26,
+            'Sirsilla-Kamareddi': 51.54,
+            'Bapatla-Tanuku': 162.02,
+            'Palasa-Siddipet': 591.83,
+            'Markapur-Tandur': 246.31,
+            'Vinukonda-Koratla': 326.57,
+            'Rayadrug-Mangalagiri': 439.06,
+            'Narasapur-Sangareddi': 402.03,
+            'Kodar-Palakollu': 194.63,
+            'Ponnuru-Gadwal': 296.06,
+            'Wanparti-Samalkot': 444.93,
+            'Kandukur-Sattenapalle': 134.63,
+            'Nuzvid-Bobbili': 332.26,
+            'Pithapuram-Amalapuram': 65.00,
+            'Tuni-Parvatipuram': 184.71,
+            'Macherla-Salur': 461.38,
+            'Bhongir-Punganuru': 461.95,
+            'Mandapeta-Jangaon': 306.86,
+            'Patancheru-Zahirabad': 70.76,
+            'Bhaisa-Peddapuram': 494.15,
+            'Nayudupeta-Bhadrachalam': 431.82,
+            'Parlakimidi-Nandikotkur': 696.47,
+            'Bhimunipatnam-Medak': 546.73,
+            'Nidadavole-Jammalamadugu': 419.16,
+            'Yellandu-Vikarabad': 259.78
+        };
+
+        const ticketsBooked = parseInt(localStorage.getItem('ticketsBooked')) || 0;
+        document.getElementById('tickets').value = ticketsBooked;
+
+        let totalPrice = 0;
+        for (let i = 1; i <= ticketsBooked; i++) {
+            const travelClass = localStorage.getItem(`class-${i}`);
+            const fromPlace = localStorage.getItem(`from-station-${i}`);
+            const toPlace = localStorage.getItem(`to-station-${i}`);
+            const route = `${fromPlace}-${toPlace}`;
+            const distance = distances[route] || 0;
+            const price = distance * classMultipliers[travelClass];
+            totalPrice += price;
+        }
+        document.getElementById('total-price').innerText = totalPrice.toFixed(2);
+
+        document.getElementById('payment-method').addEventListener('change', function() {
+            const paymentMethod = this.value;
+            document.getElementById('upi-id').required = paymentMethod === 'upi';
+            document.getElementById('card-number').required = paymentMethod === 'credit-card';
+            document.getElementById('expiry-date').required = paymentMethod === 'credit-card';
+            document.getElementById('cvv').required = paymentMethod === 'credit-card';
+            
+            document.getElementById('upi-details').style.display = paymentMethod === 'upi' ? 'block' : 'none';
+            document.getElementById('credit-card-details').style.display = paymentMethod === 'credit-card' ? 'block' : 'none';
+        });
+
+        document.getElementById('payment-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            alert('Payment Successful!');
+            // Redirect to p8.html to show ticket and passenger details
+            window.location.href = 'p8.html';
+        });
+    </script>
+</body>
+</html>

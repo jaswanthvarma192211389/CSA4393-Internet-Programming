@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket and Passenger Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("image 5.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e9ecef;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .details {
+            margin-bottom: 20px;
+        }
+        .details label {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .details div {
+            margin-bottom: 10px;
+        }
+        .button {
+            display: flex;
+            justify-content: center;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .passenger {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: rgba(0, 123, 255, 0.1);
+            border-radius: 5px;
+        }
+        .passenger h3 {
+            margin: 0;
+            margin-bottom: 10px;
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Ticket and Passenger Details</h2>
+        <div class="details">
+            <div id="ticket-details"></div>
+            <div id="passenger-details"></div>
+        </div>
+
+        <div class="button">
+            <button onclick="goBack()">Go Back</button>
+        </div>
+    </div>
+
+    <script>
+        function generateRandomSeat() {
+            return `Seat ${Math.floor(Math.random() * 100) + 1}`;
+        }
+
+        function displayDetails() {
+            const ticketsBooked = parseInt(localStorage.getItem('ticketsBooked')) || 0;
+            const ticketDetails = document.getElementById('ticket-details');
+            const passengerDetails = document.getElementById('passenger-details');
+
+            ticketDetails.innerHTML = `<label>Number of Tickets:</label><div>${ticketsBooked}</div>`;
+            
+            const passengers = [];
+            for (let i = 1; i <= ticketsBooked; i++) {
+                const name = localStorage.getItem(`passenger-name-${i}`);
+                const phone = localStorage.getItem(`passenger-phone-${i}`);
+                const gender = localStorage.getItem(`passenger-gender-${i}`);
+                const fromStation = localStorage.getItem(`from-station-${i}`);
+                const toStation = localStorage.getItem(`to-station-${i}`);
+                const date = localStorage.getItem(`date-${i}`);
+                const departureTime = localStorage.getItem(`departure-time-${i}`);
+                const travelClass = localStorage.getItem(`class-${i}`);
+                let seat = localStorage.getItem(`seat-${i}`);
+
+                if (!seat) {
+                    seat = generateRandomSeat();
+                    localStorage.setItem(`seat-${i}`, seat);
+                }
+
+                passengers.push({
+                    name, phone, gender, fromStation, toStation, date, departureTime, travelClass, seat
+                });
+            }
+
+            let passengerHtml = '<label>Passenger Details:</label>';
+            passengers.forEach((p, index) => {
+                passengerHtml += `
+                    <div class="passenger">
+                        <h3>Passenger ${index + 1}</h3>
+                        <div>Name: ${p.name}</div>
+                        <div>Phone: ${p.phone}</div>
+                        <div>Gender: ${p.gender}</div>
+                        <div>From Station: ${p.fromStation}</div>
+                        <div>To Station: ${p.toStation}</div>
+                        <div>Date: ${p.date}</div>
+                        <div>Departure Time: ${p.departureTime}</div>
+                        <div>Class: ${p.travelClass}</div>
+                        <div>Seat: ${p.seat}</div>
+                    </div>
+                `;
+            });
+
+            passengerDetails.innerHTML = passengerHtml;
+        }
+
+        function goBack() {
+            window.location.href = 'p1.html'; // Go back to the previous form
+        }
+
+        // Display the details on page load
+        displayDetails();
+    </script>
+</body>
+</html>

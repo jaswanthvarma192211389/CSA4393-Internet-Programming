@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Railway Booking Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("image 7.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e9ecef;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .button {
+            display: flex;
+            justify-content: center;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .passenger-form {
+            margin-top: 20px;
+        }
+        .passenger-form h3 {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="initial-form-container">
+        <h2>Railway Booking Form</h2>
+        <form id="initial-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select>
+
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" required>
+
+            <label for="tickets">Number of Railway Tickets:</label>
+            <input type="number" id="tickets" name="tickets" min="1" max="6" required>
+
+            <div class="note">Note: Maximum a person can book up to 6 tickets.</div>
+
+            <div class="button">
+                <button type="button" onclick="generateTicketForm()">Next</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="container" id="ticket-form-container" style="display: none;">
+        <h2>Passenger Details</h2>
+        <form id="ticket-form" onsubmit="handleSubmit(event)">
+            <div id="passenger-forms"></div>
+            <div class="button">
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function generateTicketForm() {
+            const tickets = document.getElementById('tickets').value;
+            const passengerFormsContainer = document.getElementById('passenger-forms');
+            passengerFormsContainer.innerHTML = '';
+
+            for (let i = 1; i <= tickets; i++) {
+                const passengerForm = document.createElement('div');
+                passengerForm.className = 'passenger-form';
+
+                passengerForm.innerHTML = `
+                    <h3>Passenger ${i}</h3>
+                    <label for="passenger-name-${i}">Name:</label>
+                    <input type="text" id="passenger-name-${i}" name="passenger-name-${i}" required>
+
+                    <label for="passenger-phone-${i}">Phone Number:</label>
+                    <input type="tel" id="passenger-phone-${i}" name="passenger-phone-${i}" pattern="[0-9]{10}" required>
+
+                    <label for="passenger-gender-${i}">Gender:</label>
+                    <select id="passenger-gender-${i}" name="passenger-gender-${i}" required>
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+
+                    <label for="from-station-${i}">From Station:</label>
+                    <input type="text" id="from-station-${i}" name="from-station-${i}" required>
+
+                    <label for="to-station-${i}">To Station:</label>
+                    <input type="text" id="to-station-${i}" name="to-station-${i}" required>
+
+                    <label for="date-${i}">Date:</label>
+                    <input type="date" id="date-${i}" name="date-${i}" required>
+
+                    <label for="departure-time-${i}">Departure Time:</label>
+                    <input type="time" id="departure-time-${i}" name="departure-time-${i}" required>
+
+                    <label for="class-${i}">Class:</label>
+                    <select id="class-${i}" name="class-${i}" required>
+                        <option value="">Select Class</option>
+                        <option value="sleeper">Sleeper</option>
+                        <option value="ac">AC</option>
+                        <option value="first-class">First Class</option>
+                    </select>
+                `;
+
+                passengerFormsContainer.appendChild(passengerForm);
+            }
+
+            document.getElementById('initial-form-container').style.display = 'none';
+            document.getElementById('ticket-form-container').style.display = 'block';
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            const tickets = document.getElementById('tickets').value;
+            localStorage.setItem('ticketsBooked', tickets);
+
+            for (let i = 1; i <= tickets; i++) {
+                localStorage.setItem(`passenger-name-${i}`, document.getElementById(`passenger-name-${i}`).value);
+                localStorage.setItem(`passenger-phone-${i}`, document.getElementById(`passenger-phone-${i}`).value);
+                localStorage.setItem(`passenger-gender-${i}`, document.getElementById(`passenger-gender-${i}`).value);
+                localStorage.setItem(`from-station-${i}`, document.getElementById(`from-station-${i}`).value);
+                localStorage.setItem(`to-station-${i}`, document.getElementById(`to-station-${i}`).value);
+                localStorage.setItem(`date-${i}`, document.getElementById(`date-${i}`).value);
+                localStorage.setItem(`departure-time-${i}`, document.getElementById(`departure-time-${i}`).value);
+                localStorage.setItem(`class-${i}`, document.getElementById(`class-${i}`).value);
+
+                // Generate a random seat number and store it
+                const seat = `Seat ${Math.floor(Math.random() * 100) + 1}`;
+                localStorage.setItem(`seat-${i}`, seat);
+            }
+
+            window.location.href = 'p7.html';
+        }
+    </script>
+</body>
+</html>
